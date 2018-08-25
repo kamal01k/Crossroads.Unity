@@ -15,7 +15,7 @@ public class CarControl : MonoBehaviour
     [Header("Constants")]
     public float MaxWheelTorque = 600f;
     public float BrakeTorque = 12000f;
-    public float TopSpeed = 20f;
+    public float TopSpeed = 2f;
 
 
     public void Accelerate(float amount)
@@ -23,8 +23,20 @@ public class CarControl : MonoBehaviour
         FrontLeftWheel.brakeTorque = 0f;
         FrontRightWheel.brakeTorque = 0f;
 
-        FrontLeftWheel.motorTorque = amount * MaxWheelTorque;
-        FrontRightWheel.motorTorque = amount * MaxWheelTorque;
+        if (CurrentSpeed() < TopSpeed)
+        {
+            FrontLeftWheel.motorTorque = amount * MaxWheelTorque;
+            FrontRightWheel.motorTorque = amount * MaxWheelTorque;
+        } else
+        {
+            FrontLeftWheel.motorTorque = 0f;
+            FrontRightWheel.motorTorque = 0f;
+        }
+    }
+
+    public float CurrentSpeed()
+    {
+        return GetComponent<Rigidbody>().velocity.magnitude; 
     }
 
     public void ApplyBrakes()
