@@ -39,10 +39,10 @@ public class CarControl : MonoBehaviour
         return GetComponent<Rigidbody>().velocity.magnitude; 
     }
 
-    public void ApplyBrakes()
+    public void ApplyBrakes(float amount)
     {
-        FrontLeftWheel.brakeTorque = BrakeTorque;
-        FrontRightWheel.brakeTorque = BrakeTorque;
+        FrontLeftWheel.brakeTorque = amount * BrakeTorque;
+        FrontRightWheel.brakeTorque = amount * BrakeTorque;
 
         FrontLeftWheel.motorTorque = 0f;
         FrontRightWheel.motorTorque = 0f;
