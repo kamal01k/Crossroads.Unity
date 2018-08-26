@@ -13,11 +13,13 @@ public class CarControl : MonoBehaviour, ICarControl
     public WheelCollider BackRightWheel;
 
     [Header("Constants")]
-    public float MaxWheelTorque = 600f;
+    public float MaxWheelTorque = 800f;
     public float BrakeTorque = 12000f;
-    public float TopSpeed = 2f;
+    public float TopSpeed = 3f;
 
     public float MaxSteerAngleDegrees = 45f;
+
+    public float _steerChangeSpeed = 0.3f;
 
     private Rigidbody _rigidbody;
 
@@ -28,6 +30,7 @@ public class CarControl : MonoBehaviour, ICarControl
 
     public float CurrentSpeed => _rigidbody.velocity.magnitude;
 
+
     public void Accelerate(float amount)
     {
         if (amount < -1f || amount > 1f)
@@ -36,11 +39,14 @@ public class CarControl : MonoBehaviour, ICarControl
         FrontLeftWheel.brakeTorque = 0f;
         FrontRightWheel.brakeTorque = 0f;
 
+
+        Debug.Log($"Speed: {CurrentSpeed:0.##} ");
         if (CurrentSpeed < TopSpeed)
         {
             FrontLeftWheel.motorTorque = amount * MaxWheelTorque;
             FrontRightWheel.motorTorque = amount * MaxWheelTorque;
-        } else
+        }
+        else
         {
             FrontLeftWheel.motorTorque = 0f;
             FrontRightWheel.motorTorque = 0f;
@@ -58,12 +64,19 @@ public class CarControl : MonoBehaviour, ICarControl
         FrontLeftWheel.motorTorque = 0f;
         FrontRightWheel.motorTorque = 0f;
     }
-    
+
     public void Steer(float angle)
     {
-        var newSteerAngle = Mathf.Clamp(angle, -MaxSteerAngleDegrees, MaxSteerAngleDegrees);
-        FrontLeftWheel.steerAngle = newSteerAngle;
-        FrontRightWheel.steerAngle = newSteerAngle;
+        var targetAngle = Mathf.Clamp(angle, -MaxSteerAngleDegrees, MaxSteerAngleDegrees);
+
+        var oldAngle = FrontLeftWheel.steerAngle;
+
+        var direction = (targetAngle - oldAngle) > 0f ? 1 : -1;
+
+        var newAngle = oldAngle + direction * _steerChangeSpeed;
+
+        FrontLeftWheel.steerAngle = newAngle;
+        FrontRightWheel.steerAngle = newAngle;
 
     }
 }

@@ -10,6 +10,7 @@ public class Driver : MonoBehaviour
     private ICarControl _control;
 
     private ISteeringBehavour _steeringBehavour;
+    private IAccelerationBehavour _breakingBehavour;
 
     public Driver()
     {
@@ -22,7 +23,7 @@ public class Driver : MonoBehaviour
         _steeringBehavour = new FollowWaypoints(Waypoints.ToArray());
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         _control.Accelerate(0.5f);
         _steeringBehavour.Steer(_control, transform);
@@ -61,7 +62,7 @@ public class FollowWaypoints : ISteeringBehavour
 
     private bool AtTargetWaypoint(Vector3 currentPosition)
     {
-        return Vector3.Distance(currentPosition, _waypoints[currentWaypointIndex].position) < 1f;
+        return Vector3.Distance(currentPosition, _waypoints[currentWaypointIndex].position) < 2f;
     }
 
     private bool LastWaypoint()
@@ -79,4 +80,11 @@ public class FollowWaypoints : ISteeringBehavour
 
         return angle; 
     }
+}
+
+
+
+public interface IAccelerationBehavour
+{
+    void Accelerate(ICarControl control, Transform transform);
 }
