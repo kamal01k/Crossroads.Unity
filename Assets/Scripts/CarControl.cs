@@ -19,7 +19,7 @@ public class CarControl : MonoBehaviour, ICarControl
 
     public float MaxSteerAngleDegrees = 45f;
 
-    public float _steerChangeSpeed = 0.3f;
+    private float _steerChangeSpeed = 0.3f;
 
     private Rigidbody _rigidbody;
 
@@ -40,7 +40,6 @@ public class CarControl : MonoBehaviour, ICarControl
         FrontRightWheel.brakeTorque = 0f;
 
 
-        Debug.Log($"Speed: {CurrentSpeed:0.##} ");
         if (CurrentSpeed < TopSpeed)
         {
             FrontLeftWheel.motorTorque = amount * MaxWheelTorque;
@@ -78,8 +77,8 @@ public class CarControl : MonoBehaviour, ICarControl
     private float DampAngle(float targetAngle)
     {
         var oldAngle = FrontLeftWheel.steerAngle;
-        var sign = (targetAngle - oldAngle) > 0f ? 1 : -1;
-        var newAngle = (Math.Abs(targetAngle - oldAngle) < _steerChangeSpeed) ? targetAngle : oldAngle + sign * _steerChangeSpeed;
+        var deltaSign = (targetAngle - oldAngle) > 0f ? 1 : -1;
+        var newAngle = (Math.Abs(targetAngle - oldAngle) < _steerChangeSpeed) ? targetAngle : oldAngle + deltaSign * _steerChangeSpeed;
 
         return newAngle;
     }
