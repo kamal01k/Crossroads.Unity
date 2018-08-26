@@ -741,6 +741,9 @@ MonoBehaviour:
   MaxWheelTorque: 600
   BrakeTorque: 12000
   TopSpeed: 2
+  MaxSteerAngleDegrees: 45
+  _steerChangeVelocity: 0.1
+  _steerChangeTime: 1
 --- !u!54 &941147663
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -786,6 +789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6329ac6b09ff14ebc10df0caa1caa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Waypoints: []
 --- !u!1 &1348553323
 GameObject:
   m_ObjectHideFlags: 0
@@ -970,7 +974,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 5cd4287a8c7751b45a4bb3838b52c9e9, type: 2}
+  - {fileID: 2100000, guid: f3fb78c087ea2dd4e8c44f85c5f8e874, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
