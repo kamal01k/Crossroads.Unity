@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarControl : MonoBehaviour
+public class CarControl : MonoBehaviour, ICarControl
 {
 
     [Header("Wheels")]
@@ -28,10 +28,6 @@ public class CarControl : MonoBehaviour
 
     public float CurrentSpeed => _rigidbody.velocity.magnitude;
 
-    /// <summary>
-    /// Accelerate. Kills brakes.
-    /// </summary>
-    /// <param name="amount">Acceleration amount, between -1 (full reverse) and 1 (full forward)</param>
     public void Accelerate(float amount)
     {
         if (amount < -1f || amount > 1f)
@@ -51,10 +47,6 @@ public class CarControl : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Apply breaking force. Kills motor torque.
-    /// </summary>
-    /// <param name="amount">Break strength, between 0 and 1</param>
     public void Brake(float amount)
     {
         if (amount < 0f || amount > 1f)
@@ -66,11 +58,7 @@ public class CarControl : MonoBehaviour
         FrontLeftWheel.motorTorque = 0f;
         FrontRightWheel.motorTorque = 0f;
     }
-
-    /// <summary>
-    /// Steer towards direction provided by angle relative to forward.
-    /// </summary>
-    /// <param name="angle">Angle relative to forward direction in degrees.</param>
+    
     public void Steer(float angle)
     {
         var newSteerAngle = Mathf.Clamp(angle, -MaxSteerAngleDegrees, MaxSteerAngleDegrees);
@@ -78,4 +66,26 @@ public class CarControl : MonoBehaviour
         FrontRightWheel.steerAngle = newSteerAngle;
 
     }
+}
+
+public interface ICarControl
+{
+    /// <summary>
+    /// Accelerate forward or reverse. Kills brakes.
+    /// </summary>
+    /// <param name="amount">Acceleration amount, between -1 (full reverse) and 1 (full forward)</param>
+    void Accelerate(float amount);
+
+    /// <summary>
+    /// Apply breaking force. Kills motor torque.
+    /// </summary>
+    /// <param name="amount">Break strength, between 0 and 1</param>
+    void Brake(float amount);
+
+    /// <summary>
+    /// Steer towards direction provided by angle relative to forward.
+    /// </summary>
+    /// <param name="angle">Angle relative to forward direction in degrees.</param>
+    void Steer(float angle);
+
 }
