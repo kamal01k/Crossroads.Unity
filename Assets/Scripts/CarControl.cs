@@ -17,13 +17,30 @@ public class CarControl : MonoBehaviour
     public float BrakeTorque = 12000f;
     public float TopSpeed = 2f;
 
+    public float MaxSteerAngleDegrees = 45f;
 
+    private Rigidbody _rigidbody;
+
+    private void Start()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
+
+    public float CurrentSpeed => _rigidbody.velocity.magnitude;
+
+    /// <summary>
+    /// Accelerate. Kills brakes.
+    /// </summary>
+    /// <param name="amount">Acceleration amount, between -1 (full reverse) and 1 (full forward)</param>
     public void Accelerate(float amount)
     {
+        if (amount < -1f || amount > 1f)
+            throw new ArgumentException("Argument out of bounds.");
+
         FrontLeftWheel.brakeTorque = 0f;
         FrontRightWheel.brakeTorque = 0f;
 
-        if (CurrentSpeed() < TopSpeed)
+        if (CurrentSpeed < TopSpeed)
         {
             FrontLeftWheel.motorTorque = amount * MaxWheelTorque;
             FrontRightWheel.motorTorque = amount * MaxWheelTorque;
@@ -34,17 +51,31 @@ public class CarControl : MonoBehaviour
         }
     }
 
-    public float CurrentSpeed()
+    /// <summary>
+    /// Apply breaking force. Kills motor torque.
+    /// </summary>
+    /// <param name="amount">Break strength, between 0 and 1</param>
+    public void Brake(float amount)
     {
-        return GetComponent<Rigidbody>().velocity.magnitude; 
-    }
+        if (amount < 0f || amount > 1f)
+            throw new ArgumentException("Argument out of bounds.");
 
-    public void ApplyBrakes(float amount)
-    {
         FrontLeftWheel.brakeTorque = amount * BrakeTorque;
         FrontRightWheel.brakeTorque = amount * BrakeTorque;
 
         FrontLeftWheel.motorTorque = 0f;
         FrontRightWheel.motorTorque = 0f;
+    }
+
+    /// <summary>
+    /// Steer towards direction provided by angle relative to forward.
+    /// </summary>
+    /// <param name="angle">Angle relative to forward direction in degrees.</param>
+    public void Steer(float angle)
+    {
+        var newSteerAngle = Mathf.Clamp(angle, -MaxSteerAngleDegrees, MaxSteerAngleDegrees);
+        FrontLeftWheel.steerAngle = newSteerAngle;
+        FrontRightWheel.steerAngle = newSteerAngle;
+
     }
 }
