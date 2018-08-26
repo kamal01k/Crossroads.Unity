@@ -68,16 +68,20 @@ public class CarControl : MonoBehaviour, ICarControl
     public void Steer(float angle)
     {
         var targetAngle = Mathf.Clamp(angle, -MaxSteerAngleDegrees, MaxSteerAngleDegrees);
-
-        var oldAngle = FrontLeftWheel.steerAngle;
-
-        var direction = (targetAngle - oldAngle) > 0f ? 1 : -1;
-
-        var newAngle = oldAngle + direction * _steerChangeSpeed;
+        float newAngle = DampAngle(targetAngle);
 
         FrontLeftWheel.steerAngle = newAngle;
         FrontRightWheel.steerAngle = newAngle;
 
+    }
+
+    private float DampAngle(float targetAngle)
+    {
+        var oldAngle = FrontLeftWheel.steerAngle;
+        var sign = (targetAngle - oldAngle) > 0f ? 1 : -1;
+        var newAngle = (Math.Abs(targetAngle - oldAngle) < _steerChangeSpeed) ? targetAngle : oldAngle + sign * _steerChangeSpeed;
+
+        return newAngle;
     }
 }
 
