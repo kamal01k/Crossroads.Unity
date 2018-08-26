@@ -10,7 +10,7 @@ public class Driver : MonoBehaviour
     private ICarControl _control;
 
     private ISteeringBehavour _steeringBehavour;
-    private IAccelerationBehavour _breakingBehavour;
+    private ISpeedBehavour _speedBehavour;
 
     public Driver()
     {
@@ -21,18 +21,24 @@ public class Driver : MonoBehaviour
     {
         _control = GetComponent<CarControl>();
         _steeringBehavour = new FollowWaypoints(Waypoints.ToArray());
+        _speedBehavour = new SimpleAccelerate();
     }
 
     private void FixedUpdate()
     {
-        _control.Accelerate(0.5f);
         _steeringBehavour.Steer(_control, transform);
+        _speedBehavour.RegulateSpeed(_control);
     }
 }
 
 public interface ISteeringBehavour
 {
     void Steer(ICarControl control, Transform transform);
+}
+
+public interface ISpeedBehavour
+{
+    void RegulateSpeed(ICarControl control);
 }
 
 public class FollowWaypoints : ISteeringBehavour
@@ -84,7 +90,10 @@ public class FollowWaypoints : ISteeringBehavour
 
 
 
-public interface IAccelerationBehavour
+public class SimpleAccelerate : ISpeedBehavour
 {
-    void Accelerate(ICarControl control, Transform transform);
+    public void RegulateSpeed(ICarControl control)
+    {
+        control.Accelerate(0.5f);
+    }
 }
